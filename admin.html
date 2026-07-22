@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="icon-admin-180.png?v=1">
+<title>Admin - Mashruuc-ec SaaS</title>
+<style>
+ :root{ --bg:#0d1117; --card:#161b22; --bdr:#242c38; --txt:#e6edf3; --mut:#8b98a5;
+  --bl:#2f81f7; --gr:#238636; --rd:#da3633; --am:#F0A020; --navy:#0B2A4A; }
+ *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+ body{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--txt); padding-bottom:40px; }
+ .hdr{ background:linear-gradient(135deg,var(--navy),#143a63); padding:18px 16px; border-bottom:3px solid var(--am);
+  display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:20; }
+ .hdr h1{ font-size:18px; font-weight:800; }
+ .hdr .sub{ font-size:11px; color:#cfe0f2; margin-top:2px; }
+ .wrap{ max-width:640px; margin:0 auto; padding:14px; }
+ .row{ display:flex; gap:10px; }
+ .stat{ flex:1; background:var(--card); border:1px solid var(--bdr); border-radius:12px; padding:12px; text-align:center; }
+ .stat .n{ font-size:22px; font-weight:800; } .stat .l{ font-size:11px; color:var(--mut); margin-top:2px; }
+ .bar{ display:flex; gap:10px; margin:14px 0; }
+ .btn{ border:none; border-radius:10px; padding:12px 14px; font-size:14px; font-weight:700; cursor:pointer; color:#fff; }
+ .btn.pri{ background:var(--am); color:#1a1200; flex:1; }
+ .btn.gho{ background:var(--card); border:1px solid var(--bdr); color:var(--txt); }
+ .tcard{ background:var(--card); border:1px solid var(--bdr); border-radius:14px; padding:14px; margin-bottom:12px; }
+ .tcard .top{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+ .code{ font-size:12px; font-weight:800; color:var(--am); background:rgba(240,160,32,.12); border:1px solid rgba(240,160,32,.3);
+  padding:3px 9px; border-radius:7px; }
+ .nm{ font-size:16px; font-weight:800; margin-top:6px; }
+ .meta{ font-size:12.5px; color:var(--mut); margin-top:3px; }
+ .pill{ font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; }
+ .pill.ok{ color:#3fb950; background:rgba(35,134,54,.15); }
+ .pill.off{ color:#f85149; background:rgba(218,54,51,.15); }
+ .pill.exp{ color:#e3a008; background:rgba(227,160,8,.15); }
+ .acts{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+ .acts button{ border:1px solid var(--bdr); background:#0d1117; color:var(--txt); border-radius:8px;
+  padding:7px 11px; font-size:12.5px; font-weight:700; cursor:pointer; }
+ .acts .dng{ color:#f85149; border-color:rgba(218,54,51,.4); }
+ .acts .go{ color:#3fb950; border-color:rgba(35,134,54,.4); }
+ .ovl{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:100; align-items:flex-end; }
+ .ovl.open{ display:flex; }
+ .sheet{ background:var(--card); width:100%; max-width:640px; margin:0 auto; border-radius:18px 18px 0 0;
+  padding:18px 16px 30px; max-height:92vh; overflow-y:auto; }
+ .sheet h3{ font-size:17px; margin-bottom:14px; }
+ label{ display:block; font-size:12.5px; color:var(--mut); margin:12px 0 5px; font-weight:600; }
+ input,textarea,select{ width:100%; background:#0d1117; border:1px solid var(--bdr); border-radius:9px;
+  padding:11px; color:var(--txt); font-size:15px; font-family:inherit; }
+ .save{ width:100%; background:var(--gr); color:#fff; border:none; border-radius:10px; padding:13px; font-size:15px;
+  font-weight:700; margin-top:16px; cursor:pointer; }
+ .xir{ width:100%; background:transparent; color:var(--mut); border:1px solid var(--bdr); border-radius:10px;
+  padding:11px; font-size:14px; margin-top:8px; cursor:pointer; }
+ .login{ position:fixed; inset:0; background:var(--bg); z-index:300; display:flex; align-items:center; justify-content:center; padding:24px; }
+ .login.hide{ display:none; }
+ .lbox{ width:100%; max-width:320px; text-align:center; }
+ .linkbox{ background:#0d1117; border:1px solid var(--bdr); border-radius:9px; padding:11px; font-size:12.5px;
+  word-break:break-all; color:var(--bl); margin-top:6px; }
+ .toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(80px); background:#fff; color:#111;
+  padding:11px 18px; border-radius:10px; font-weight:700; font-size:14px; opacity:0; transition:.25s; z-index:500; }
+ .toast.on{ transform:translateX(-50%) translateY(0); opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+ <div class="lbox">
+  <div style="background:linear-gradient(135deg,var(--navy),#143a63);border-radius:18px;padding:22px;border-bottom:4px solid var(--am)">
+   <div style="font-size:34px">&#128273;</div>
+   <div style="font-size:20px;font-weight:800;margin-top:6px">ADMIN PANEL</div>
+   <div style="font-size:12px;color:#cfe0f2;margin-top:4px">Maamulka Macaamiisha (SaaS)</div>
+  </div>
+  <input type="password" id="apin" inputmode="numeric" placeholder="Admin PIN" style="text-align:center;letter-spacing:6px;margin-top:16px">
+  <button class="save" id="btnLogin" style="margin-top:10px">Gal</button>
+  <p id="lerr" style="color:#f85149;font-size:13px;min-height:18px;margin-top:8px"></p>
+ </div>
+</div>
+
+<div class="hdr">
+ <div>
+  <h1>Maamulka Macaamiisha</h1>
+  <div class="sub">Mashruuc-ec SaaS</div>
+ </div>
+ <button class="btn gho" id="btnReload">&#8635;</button>
+</div>
+
+<div class="wrap">
+ <div class="row" id="stats"></div>
+ <div class="bar">
+  <button class="btn pri" id="btnAdd">&#43; Macmiil cusub</button>
+ </div>
+ <div id="list"></div>
+</div>
+
+<div class="ovl" id="ovl"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== CONFIG ===== */
+var SB_URL = 'https://dslpzpbasrfyproeusvl.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzbHB6cGJhc3JmeXByb2V1c3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzc2MDUsImV4cCI6MjA5ODgxMzYwNX0.4DbHXrpvbHW-jHKe-sHIqN4jfDIr9TOpdXm9udlIryY';
+var ADMIN_PIN = '3965';
+/* Link-ga appka macaamiisha loo diro */
+var APP_URL = 'https://dahabo4466219-glitch.github.io/mashruuc-ec/mashruuc-ec.html';
+
+var TENANTS = [];
+
+/* ===== HELPERS ===== */
+function h(){ return { 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' }; }
+function api(t,q){ return SB_URL+'/rest/v1/'+t+(q?('?'+q):''); }
+function chk(r){ if(r.ok) return r.json(); return r.json().then(function(e){ throw new Error((e&&(e.message||e.hint))||('Khalad '+r.status)); }, function(){ throw new Error('Khalad '+r.status); }); }
+function sbGet(t,q){ return fetch(api(t,q||'select=*'),{headers:h()}).then(function(r){ return r.json(); }).catch(function(){ return []; }); }
+function sbPost(t,b){ return fetch(api(t),{method:'POST',headers:h(),body:JSON.stringify(b)}).then(chk); }
+function sbPatch(t,id,b){ return fetch(api(t,'id=eq.'+id),{method:'PATCH',headers:h(),body:JSON.stringify(b)}).then(chk); }
+function sbDel(t,id){ return fetch(api(t,'id=eq.'+id),{method:'DELETE',headers:h()}); }
+function esc(x){ if(x===null||x===undefined) return ''; return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.className='toast on'; setTimeout(function(){ t.className='toast'; },2200); }
+function openSheet(x){ document.getElementById('sheet').innerHTML=x; document.getElementById('ovl').className='ovl open'; }
+function closeSheet(){ document.getElementById('ovl').className='ovl'; }
+function todayStr(){ var d=new Date(); return d.toISOString().slice(0,10); }
+function daysLeft(exp){ if(!exp) return null; var a=new Date(exp+'T00:00:00'), b=new Date(todayStr()+'T00:00:00'); return Math.round((a-b)/86400000); }
+function addMonths(exp,m){ var d = exp ? new Date(exp+'T00:00:00') : new Date(); var t=new Date(todayStr()+'T00:00:00'); if(d<t) d=t; d.setMonth(d.getMonth()+m); return d.toISOString().slice(0,10); }
+function fail(e){ alert('Khalad:\n\n'+((e&&e.message)?e.message:'?')); }
+
+/* ===== STATUS ===== */
+function statusOf(t){
+ if(t.active===false) return { cls:'off', label:'Xidhan' };
+ if(t.expiry){ var dl=daysLeft(t.expiry); if(dl<0) return { cls:'exp', label:'Dhacay' }; if(dl<=7) return { cls:'exp', label:dl+' maalmood' }; }
+ return { cls:'ok', label:'Furan' };
+}
+
+/* ===== LOAD + RENDER ===== */
+function loadTenants(){
+ sbGet('tenants','select=*&order=created_at.desc').then(function(rows){
+  TENANTS = rows || [];
+  render();
+ });
+}
+function render(){
+ var act=0, off=0, exp=0;
+ for(var i=0;i<TENANTS.length;i++){
+  var t=TENANTS[i];
+  if(t.active===false) off++;
+  else if(t.expiry && daysLeft(t.expiry)<0) exp++;
+  else act++;
+ }
+ var st="";
+ st += "<div class='stat'><div class='n'>"+TENANTS.length+"</div><div class='l'>Wadar</div></div>";
+ st += "<div class='stat'><div class='n' style='color:#3fb950'>"+act+"</div><div class='l'>Furan</div></div>";
+ st += "<div class='stat'><div class='n' style='color:#e3a008'>"+exp+"</div><div class='l'>Dhacay</div></div>";
+ st += "<div class='stat'><div class='n' style='color:#f85149'>"+off+"</div><div class='l'>Xidhan</div></div>";
+ document.getElementById('stats').innerHTML = st;
+
+ if(!TENANTS.length){ document.getElementById('list').innerHTML = "<p style='color:var(--mut);text-align:center;padding:30px 0'>Wali macmiil ma jiro. Riix \u201c+ Macmiil cusub\u201d.</p>"; return; }
+
+ var s="";
+ for(var j=0;j<TENANTS.length;j++){
+  var x=TENANTS[j];
+  var stt=statusOf(x);
+  var nm=((x.name1||'')+' '+(x.name2||'')).trim() || (x.short||'-');
+  var expTxt = x.expiry ? ('Dhacaya: '+x.expiry) : 'Muddo la\u2019aan';
+  var dl = daysLeft(x.expiry);
+  if(dl!==null && dl>=0) expTxt += ' ('+dl+' maalmood)';
+  s += "<div class='tcard'>";
+  s += "<div class='top'><span class='code'>"+esc(x.code)+"</span><span class='pill "+stt.cls+"'>"+stt.label+"</span></div>";
+  s += "<div class='nm'>"+esc(nm)+"</div>";
+  s += "<div class='meta'>\uD83D\uDCDE "+esc(x.phone||'-')+"</div>";
+  s += "<div class='meta'>"+esc(expTxt)+"</div>";
+  s += "<div class='acts'>";
+  s += "<button onclick='editForm("+x.id+")'>\u270F\uFE0F Beddel</button>";
+  if(x.active===false) s += "<button class='go' onclick='setActive("+x.id+",true)'>\u2705 Fur</button>";
+  else s += "<button class='dng' onclick='setActive("+x.id+",false)'>\u26D4 Xidh</button>";
+  s += "<button onclick='extend("+x.id+",6)'>+6 bil</button>";
+  s += "<button onclick='extend("+x.id+",1)'>+1 bil</button>";
+  s += "<button onclick='showLink("+x.id+")'>\uD83D\uDD17 Link</button>";
+  s += "<button class='dng' onclick='delTenant("+x.id+")'>\uD83D\uDDD1</button>";
+  s += "</div>";
+  s += "</div>";
+ }
+ document.getElementById('list').innerHTML = s;
+}
+
+function tById(id){ for(var i=0;i<TENANTS.length;i++){ if(TENANTS[i].id==id) return TENANTS[i]; } return null; }
+
+/* ===== FORM ===== */
+function addForm(){ formSheet(null); }
+function editForm(id){ formSheet(tById(id)); }
+function formSheet(t){
+ t = t || {};
+ var isNew = !t.id;
+ var s = "<h3>"+(isNew?"Macmiil cusub":"Beddel macmiil")+"</h3>";
+ s += "<label>Code (gaar ah, lama beddeli karo)</label>";
+ s += "<input id='f_code' value=\""+esc(t.code||'')+"\" placeholder='TUS: XASAN-001' "+(isNew?'':'readonly style=\"opacity:.6\"')+">";
+ s += "<label>Magaca sadarka 1aad</label><input id='f_n1' value=\""+esc(t.name1||'')+"\" placeholder='TUS: XASAN'>";
+ s += "<label>Magaca sadarka 2aad</label><input id='f_n2' value=\""+esc(t.name2||'')+"\" placeholder='TUS: ELECTRIC'>";
+ s += "<label>Magaca buuxa (short)</label><input id='f_sh' value=\""+esc(t.short||'')+"\" placeholder='TUS: Xasan Electric'>";
+ s += "<label>Taleefan</label><input id='f_ph' value=\""+esc(t.phone||'')+"\" inputmode='numeric' placeholder='063xxxxxxx'>";
+ s += "<label>Adeegyada</label><input id='f_svc' value=\""+esc(t.svc||'Koronto \u2022 Biyo \u2022 Nijaarnimo \u2022 Kaleedh')+"\">";
+ s += "<label>PIN (uu ku galo)</label><input id='f_pin' value=\""+esc(t.pin||'1234')+"\" inputmode='numeric'>";
+ s += "<label>Muddada dhacaysa (expiry)</label><input id='f_exp' type='date' value=\""+esc(t.expiry||'')+"\">";
+ s += "<label>Xaalad</label><select id='f_act'><option value='1'"+(t.active===false?'':' selected')+">Furan</option><option value='0'"+(t.active===false?' selected':'')+">Xidhan</option></select>";
+ s += "<button class='save' onclick='saveTenant("+(t.id||0)+")'>Kaydi</button>";
+ s += "<button class='xir' onclick='closeSheet()'>Jooji</button>";
+ openSheet(s);
+}
+function saveTenant(id){
+ var code = val('f_code');
+ if(!code){ toast('Code gali'); return; }
+ var body = {
+  name1: val('f_n1'), name2: val('f_n2'), short: val('f_sh'),
+  phone: val('f_ph'), svc: val('f_svc'), pin: val('f_pin')||'1234',
+  expiry: val('f_exp') || null,
+  active: (val('f_act')==='1')
+ };
+ var pr;
+ if(id){ pr = sbPatch('tenants', id, body); }
+ else { body.code = code; pr = sbPost('tenants', body); }
+ pr.then(function(){ closeSheet(); toast('La kaydiyay'); loadTenants(); }).catch(fail);
+}
+function setActive(id, on){
+ sbPatch('tenants', id, { active:on }).then(function(){ toast(on?'La furay':'La xidhay'); loadTenants(); }).catch(fail);
+}
+function extend(id, months){
+ var t = tById(id); if(!t) return;
+ var ne = addMonths(t.expiry, months);
+ sbPatch('tenants', id, { expiry:ne, active:true }).then(function(){ toast('Muddo la kordhiyay: '+ne); loadTenants(); }).catch(fail);
+}
+function delTenant(id){
+ var t = tById(id); if(!t) return;
+ if(!confirm('Tirtir "'+t.code+'"? (xogtiisu way sii jiri doontaa)')) return;
+ sbDel('tenants', id).then(function(){ toast('La tirtiray'); loadTenants(); }).catch(fail);
+}
+function showLink(id){
+ var t = tById(id); if(!t) return;
+ var link = APP_URL + '?code=' + encodeURIComponent(t.code);
+ var s = "<h3>Link-ga "+esc(t.code)+"</h3>";
+ s += "<p style='color:var(--mut);font-size:13px'>Kan u dir macmiilka. Isagu wuxuu ku gali doonaa PIN: <b style='color:var(--txt)'>"+esc(t.pin||'1234')+"</b></p>";
+ s += "<div class='linkbox' id='lnk'>"+esc(link)+"</div>";
+ s += "<button class='save' onclick='copyLink()'>\uD83D\uDCCB Nuqul (Copy)</button>";
+ s += "<button class='xir' style='color:#25D366;border-color:#25D366' onclick='waLink(\""+esc(link).replace(/"/g,'')+"\")'>\uD83D\uDCE4 WhatsApp ku dir</button>";
+ s += "<button class='xir' onclick='closeSheet()'>Xir</button>";
+ openSheet(s);
+}
+function copyLink(){
+ var txt = document.getElementById('lnk').textContent;
+ if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){ toast('La nuqulay'); }, function(){ toast('Ma nuqulin'); }); }
+ else { toast('Copy lama taageerin'); }
+}
+function waLink(link){ window.open('https://wa.me/?text=' + encodeURIComponent(link), '_blank'); }
+
+/* ===== LOGIN ===== */
+function doLogin(){
+ if(val('apin')===ADMIN_PIN){ document.getElementById('login').className='login hide'; loadTenants(); }
+ else document.getElementById('lerr').textContent='PIN khalad ah';
+}
+function start(){
+ document.getElementById('btnLogin').onclick = doLogin;
+ document.getElementById('apin').onkeydown = function(e){ if(e.key==='Enter') doLogin(); };
+ document.getElementById('btnAdd').onclick = addForm;
+ document.getElementById('btnReload').onclick = loadTenants;
+ document.getElementById('ovl').onclick = function(e){ if(e.target.id==='ovl') closeSheet(); };
+ try{
+  var mf = { name:'ADMIN - SaaS', short_name:'ADMIN', start_url:'.', display:'standalone', background_color:'#0d1117', theme_color:'#0B2A4A',
+   icons:[{ src:'icon-admin-512.png?v=1', sizes:'512x512', type:'image/png' },{ src:'icon-admin-180.png?v=1', sizes:'180x180', type:'image/png' }] };
+  var bl = new Blob([JSON.stringify(mf)],{type:'application/json'});
+  var lk = document.createElement('link'); lk.rel='manifest'; lk.href=URL.createObjectURL(bl);
+  document.head.appendChild(lk);
+ }catch(e){}
+}
+window.onload = start;
+</script>
+</body>
+</html>
